@@ -1,5 +1,5 @@
 trigger:
-- feature/logic-app
+- main
 
 pool:
   vmImage: ubuntu-latest
@@ -31,23 +31,23 @@ stages:
         inputs:
           terraformVersion: '1.4.1'
 
-      - task: InstallSSHKey@0
-        inputs:
-          knownHostsEntry: '$(known_hosts)'
-          sshKeySecureFile: 'ado-key'
+      # - task: InstallSSHKey@0
+      #   inputs:
+      #     knownHostsEntry: '$(known_hosts)'
+      #     sshKeySecureFile: 'ado-key'
 
 
       - task: TerraformTaskV3@3
         displayName: Terraform Init
         inputs:
-          backendServiceArm: 'my-backend-blob'
-          backendAzureRmResourceGroupName: 'insights_v4_dev' 
-          backendAzureRmStorageAccountName: 'insightsterraformstate' 
+          backendServiceArm: 'adf-tf'
+          backendAzureRmResourceGroupName: 'demo-adf-tf' 
+          backendAzureRmStorageAccountName: 'insightadf' 
           backendAzureRmContainerName: 'tfstate' 
           backendAzureRmKey: 'adf_infra.tfstate'
           command: 'init'
-          workingDirectory: '$(System.DefaultWorkingDirectory)/deployment/Terraform'
-          commandOptions: '-backend-config="sas_token=$(SAS_TOKEN)"'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
+    
 
 
   
