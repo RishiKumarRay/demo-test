@@ -1,0 +1,116 @@
+trigger:
+- feature/logic-app
+
+pool:
+  vmImage: ubuntu-latest
+
+variables: 
+  ACCESS_KEY: '$(ARM_ACCESS_KEY)'
+  SAS_TOKEN: '$(ARM_SAS_TOKEN)'
+  demo1: '123'
+
+stages:
+- stage: Terraform_Provision 
+  jobs:
+    - job: TerraformValidateJob
+      continueOnError: false
+      steps:
+      - bash: ls -R $(System.DefaultWorkingDirectory)
+      - bash: echo "$(ARM_ACCESS_KEY)"
+      - bash: export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
+      - bash: echo $ARM_ACCESS_KEY
+      
+      - task: PublishPipelineArtifact@1
+        displayName: Publish Artifacts
+        inputs:
+          targetPath: '$(System.DefaultWorkingDirectory)/deployment/Terraform'
+          artifact: 'common-manifests-out'
+          publishLocation: 'pipeline'
+      - task: TerraformInstaller@0
+        displayName: Terraform Install
+        inputs:
+          terraformVersion: '1.4.1'
+
+      - task: InstallSSHKey@0
+        inputs:
+          knownHostsEntry: '$(known_hosts)'
+          sshKeySecureFile: 'ado-key'
+
+
+      - task: TerraformTaskV3@3
+        displayName: Terraform Init
+        inputs:
+          backendServiceArm: 'my-backend-blob'
+          backendAzureRmResourceGroupName: 'insights_v4_dev' 
+          backendAzureRmStorageAccountName: 'insightsterraformstate' 
+          backendAzureRmContainerName: 'tfstate' 
+          backendAzureRmKey: 'adf_infra.tfstate'
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/deployment/Terraform'
+          commandOptions: '-backend-config="sas_token=$(SAS_TOKEN)"'
+
+
+  
+      
+
+      # - task: TerraformTaskV3@3
+      #   displayName: Terraform Validate
+      #   inputs:
+      #     backendServiceArm: 'my-backend-blob'
+      #     backendAzureRmResourceGroupName: 'insights_v4_dev' 
+      #     backendAzureRmStorageAccountName: 'insightsterraformstate' 
+      #     backendAzureRmContainerName: 'tfstate' 
+      #     backendAzureRmKey: 'adf_infra.tfstate'
+      #     command: 'validate'
+      #     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment/Terraform'
+
+# Install Tflint and scan the terraform modules
+    # - job: TFLintJob
+    #   displayName: TFLint
+    #   continueOnError: true
+    #   dependsOn: TerraformValidateJob
+    #   steps:
+
+    #   - task: Bash@3
+    #     displayName: Install TFLint
+    #     inputs:
+    #       targetType: 'inline'
+    #       script: |
+    #         curl https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+    #   - task: Bash@3
+    #     displayName: Run TFLint
+    #     inputs:
+    #       targetType: 'inline'
+    #       script: |
+    #         tflint --module $(System.DefaultWorkingDirectory)/deployment/Terraform
+
+    #   - task: PublishPipelineArtifact@1
+    #     displayName: Publish TFLint Results
+    #     inputs:
+    #       targetPath: '$(System.DefaultWorkingDirectory)/deployment/Terraform'
+    #       artifact: 'tflint-results'
+    #       publishLocation: 'pipeline'
+      - task: TerraformTaskV3@3
+        displayName: Terraform Plan
+        inputs:
+          environmentServiceNameAzureRM: 'my-backend-blob'
+          # backendAzureRmResourceGroupName: 'insights_v4_dev' 
+          # backendAzureRmStorageAccountName: 'insightsterraformstate' 
+          # backendAzureRmContainerName: 'tfstate' 
+          # backendAzureRmKey: 'adf_infra.tfstate'
+          command: 'plan'
+          workingDirectory: '$(Pipeline.Workspace)/deployment/Terraform'
+          commandOptions: '-var-file=terraform.tfvars -out $(Pipeline.Workspace)/Terraform/terraform-$(Build.BuildId).out'
+      # - task: TerraformTaskV3@3
+      #   displayName: Terraform Apply 
+      #   inputs:
+      #     backendServiceArm: 'my-backend-blob'
+      #     backendAzureRmResourceGroupName: 'insights_v4_dev' 
+      #     backendAzureRmStorageAccountName: 'insightsterraformstate' 
+      #     backendAzureRmContainerName: 'tfstate' 
+      #     backendAzureRmKey: 'adf_infra.tfstate'
+      #     command: 'apply'
+      #     workingDirectory: '$(Pipeline.Workspace)/deployment/Terraform'
+      #     commandOptions: '$(Pipeline.Workspace)/Terraform/terraform-$(Build.BuildId).out'
+      
