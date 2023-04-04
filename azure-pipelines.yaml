@@ -1,9 +1,9 @@
 trigger:
 - main
 
-pool:
-  name: azure-pipelines
-  demands: Limit -equals DisAbleParallel 
+# pool:
+#   name: azure-pipelines
+#   demands: Limit -equals DisAbleParallel 
 
 variables: 
   ACCESS_KEY: '$(ARM_ACCESS_KEY)'
@@ -16,17 +16,13 @@ stages:
     - job: TerraformValidateJob
       continueOnError: false
       steps:
-      - bash: ls -R $(System.DefaultWorkingDirectory)
-      - bash: echo "$(ARM_ACCESS_KEY)"
-      - bash: export ARM_ACCESS_KEY=$(ARM_ACCESS_KEY)
-      - bash: echo $ARM_ACCESS_KEY
       
-      - task: PublishPipelineArtifact@1
-        displayName: Publish Artifacts
-        inputs:
-          targetPath: '$(System.DefaultWorkingDirectory)'
-          artifact: 'common-manifests-out'
-          publishLocation: 'pipeline'
+      # - task: PublishPipelineArtifact@1
+      #   displayName: Publish Artifacts
+      #   inputs:
+      #     targetPath: '$(System.DefaultWorkingDirectory)'
+      #     artifact: 'common-manifests-out'
+      #     publishLocation: 'pipeline'
       # - task: TerraformInstaller@0
       #   displayName: Terraform Install
       #   inputs:
