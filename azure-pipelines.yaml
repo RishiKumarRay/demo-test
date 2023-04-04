@@ -87,18 +87,18 @@ stages:
     #       targetPath: '$(System.DefaultWorkingDirectory)/deployment/Terraform'
     #       artifact: 'tflint-results'
     #       publishLocation: 'pipeline'
-      - task: TerraformTaskV3@3
-        displayName: Terraform Plan
-        inputs:
-          environmentServiceNameAzureRM: 'my-backend-blob'
-          # backendAzureRmResourceGroupName: 'insights_v4_dev' 
-          # backendAzureRmStorageAccountName: 'insightsterraformstate' 
-          # backendAzureRmContainerName: 'tfstate' 
-          # backendAzureRmKey: 'adf_infra.tfstate'
-          command: 'plan'
-          workingDirectory: '$(Pipeline.Workspace)/deployment/Terraform'
-          commandOptions: '-var-file=terraform.tfvars -out $(Pipeline.Workspace)/Terraform/terraform-$(Build.BuildId).out'
       # - task: TerraformTaskV3@3
+      #   displayName: Terraform Plan
+      #   inputs:
+      #     environmentServiceNameAzureRM: 'my-backend-blob'
+      #     # backendAzureRmResourceGroupName: 'insights_v4_dev' 
+      #     # backendAzureRmStorageAccountName: 'insightsterraformstate' 
+      #     # backendAzureRmContainerName: 'tfstate' 
+      #     # backendAzureRmKey: 'adf_infra.tfstate'
+      #     command: 'plan'
+      #     workingDirectory: '$(Pipeline.Workspace)/deployment/Terraform'
+      #     commandOptions: '-var-file=terraform.tfvars -out $(Pipeline.Workspace)/Terraform/terraform-$(Build.BuildId).out'
+      # # - task: TerraformTaskV3@3
       #   displayName: Terraform Apply 
       #   inputs:
       #     backendServiceArm: 'my-backend-blob'
