@@ -22,7 +22,7 @@ resource "azurerm_resource_group" "rg" {
 module "adf" {
   #source  = "git::ssh://github.com/duck-creek/DuckCreek.TerraformModule.adf.git//modules/adf?ref='feature/29268/update'"
   #source = "git::https://github.com/duck-creek/DuckCreek.TerraformModule.adf.git//modules/adf?ref=feature/29268/update"
-  source = "https://github.com/RishiKumarRay/adf-module.git?ref=feature/29268/update"
+  source = "https://github.com/RishiKumarRay/adf-module.git"
   #source = "./modules/adf"
 
   #version = "x.x.x"
