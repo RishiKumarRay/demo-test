@@ -1,6 +1,9 @@
 trigger:
 - main
 
+pool:
+  name: ubuntu-latest
+  demands: Limit -equals DisAbleParallel 
 
 variables: 
   ACCESS_KEY: '$(ARM_ACCESS_KEY)'
