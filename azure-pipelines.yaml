@@ -26,10 +26,10 @@ stages:
           targetPath: '$(System.DefaultWorkingDirectory)'
           artifact: 'common-manifests-out'
           publishLocation: 'pipeline'
-      - task: TerraformInstaller@0
-        displayName: Terraform Install
-        inputs:
-          terraformVersion: '1.4.1'
+      # - task: TerraformInstaller@0
+      #   displayName: Terraform Install
+      #   inputs:
+      #     terraformVersion: '1.4.1'
 
       # - task: InstallSSHKey@0
       #   inputs:
@@ -37,7 +37,7 @@ stages:
       #     sshKeySecureFile: 'ado-key'
 
 
-      - task: TerraformTaskV3@3
+      - task: TerraformCLI@0
         displayName: Terraform Init
         inputs:
           backendServiceArm: 'adf-tf'
@@ -47,11 +47,7 @@ stages:
           backendAzureRmKey: 'adf_infra.tfstate'
           command: 'init'
           workingDirectory: '$(System.DefaultWorkingDirectory)'
-    
 
-
-  
-      
 
       # - task: TerraformTaskV3@3
       #   displayName: Terraform Validate
