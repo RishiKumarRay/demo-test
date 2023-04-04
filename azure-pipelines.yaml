@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  name: ubuntu-latest
+  name: azure-pipelines
   demands: Limit -equals DisAbleParallel 
 
 variables: 
