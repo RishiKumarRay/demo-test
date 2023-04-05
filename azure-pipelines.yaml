@@ -2,8 +2,7 @@ trigger:
 - main
 
 pool:
-  name: Azure Pipelines
-  demands: Limit -equals DisAbleParallel 
+  vmImage: ubuntu-latest
 
 variables: 
   ACCESS_KEY: '$(ARM_ACCESS_KEY)'
